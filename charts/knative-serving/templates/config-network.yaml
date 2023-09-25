@@ -1,0 +1,13 @@
+{{- if .Values.configNetwork.configMap.create -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-network
+  labels:
+    app.kubernetes.io/component: networking
+  {{- include "knative-serving.labels" . | nindent 4 }}
+{{- with .Values.configNetwork.data }}
+data:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}

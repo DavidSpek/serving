@@ -1,0 +1,13 @@
+{{- if .Values.configObservability.configMap.create -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "knative-serving.configObservabilityName" . }}
+  labels:
+    app.kubernetes.io/component: observability
+    {{- include "knative-serving.labels" . | nindent 4 }}
+{{- with .Values.configObservability.data }}
+data:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}

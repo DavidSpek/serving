@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "knative-serving.fullname" . }}-controller
+  labels:
+    {{- include "knative-serving.labels" . | nindent 4 }}
+    {{- include "knative-serving.controllerSelectorLabels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+    {{- include "knative-serving.selectorLabels" . | nindent 6 }}
+    {{- include "knative-serving.controllerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+      {{- include "knative-serving.selectorLabels" . | nindent 8 }}
+      {{- include "knative-serving.controllerSelectorLabels" . | nindent 8 }}
+      {{- with .Values.controller.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+      - env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: {{ include "knative-serving.configLoggingName" . }}
+        - name: CONFIG_OBSERVABILITY_NAME
+          value: {{ include "knative-serving.configObservabilityName" . }}
+        - name: METRICS_DOMAIN
+          value: {{ quote .Values.metricsDomain }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        {{- with .Values.controller.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        image: {{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag | default .Chart.AppVersion }}{{- if .Values.controller.image.digest }}@{{ .Values.controller.image.digest }}{{- end }}
+        imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
+        livenessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /health
+            port: probes
+            scheme: HTTP
+          periodSeconds: 5
+        name: controller
+        ports:
+        - containerPort: 9090
+          name: metrics
+        - containerPort: 8008
+          name: profiling
+        - containerPort: 8080
+          name: probes
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readiness
+            port: probes
+            scheme: HTTP
+          periodSeconds: 5
+        resources: {{- toYaml .Values.controller.resources | nindent 10 }}
+        securityContext: {{- toYaml .Values.controller.containerSecurityContext
+          | nindent 10 }}
+      imagePullSecrets: {{ .Values.imagePullSecrets | default list | toJson }}
+      serviceAccountName:  {{ include "knative-serving.controllerServiceAccountName" . }}
+      {{- with .Values.controller.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.controller.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.controller.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.controller.topologySpreadConstraints }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

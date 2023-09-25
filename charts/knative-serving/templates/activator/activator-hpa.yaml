@@ -1,0 +1,33 @@
+{{- if .Values.activator.autoscaling.enabled -}}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "knative-serving.fullname" . }}-activator
+  labels:
+  {{- include "knative-serving.labels" . | nindent 4 }}
+  {{- include "knative-serving.activatorSelectorLabels" . | nindent 4 }}
+spec:
+  minReplicas: {{ .Values.activator.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.activator.autoscaling.maxReplicas }}
+  metrics:
+  {{- if .Values.activator.autoscaling.targetCPUUtilizationPercentage }}
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: {{ .Values.activator.autoscaling.targetCPUUtilizationPercentage }}
+        type: Utilization
+    type: Resource
+  {{- end }}
+  {{- if .Values.activator.autoscaling.targetMemoryUtilizationPercentage }}
+  - resource:
+      name: memory
+      target:
+        averageUtilization: {{ .Values.activator.autoscaling.targetMemoryUtilizationPercentage }}
+        type: Utilization
+    type: Resource
+  {{- end }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "knative-serving.fullname" . }}-activator
+{{- end }}

@@ -1,0 +1,15 @@
+{{- if .Values.webhook.pdb.create -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "knative-serving.fullname" . }}-webhook-pdb
+  labels:
+    {{- include "knative-serving.labels" . | nindent 4 }}
+    {{- include "knative-serving.webookSelectorLabels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.webhook.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "knative-serving.selectorLabels" . | nindent 6 }}
+      {{- include "knative-serving.webookSelectorLabels" . | nindent 6 }}
+{{- end }}

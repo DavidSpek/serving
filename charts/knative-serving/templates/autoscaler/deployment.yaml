@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "knative-serving.fullname" . }}-autoscaler
+  labels:
+  {{- include "knative-serving.labels" . | nindent 4 }}
+  {{- include "knative-serving.autoscalerSelectorLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.autoscaler.replicas }}
+  selector:
+    matchLabels:
+    {{- include "knative-serving.selectorLabels" . | nindent 6 }}
+    {{- include "knative-serving.autoscalerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+      {{- include "knative-serving.selectorLabels" . | nindent 8 }}
+      {{- include "knative-serving.autoscalerSelectorLabels" . | nindent 8 }}
+      {{- with .Values.autoscaler.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+      - env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: {{ include "knative-serving.configLoggingName" . }}
+        - name: CONFIG_OBSERVABILITY_NAME
+          value: {{ include "knative-serving.configObservabilityName" . }}
+        - name: METRICS_DOMAIN
+          value: {{ quote .Values.metricsDomain }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        {{- with .Values.autoscaler.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        image: {{ .Values.autoscaler.image.repository }}:{{ .Values.autoscaler.image.tag | default .Chart.AppVersion }}{{- if .Values.autoscaler.image.digest }}@{{ .Values.autoscaler.image.digest }}{{- end }}
+        imagePullPolicy: {{ .Values.autoscaler.image.pullPolicy }}
+        livenessProbe:
+          failureThreshold: 6
+          httpGet:
+            httpHeaders:
+            - name: k-kubelet-probe
+              value: autoscaler
+            port: 8080
+        name: autoscaler
+        ports:
+        - containerPort: 9090
+          name: metrics
+        - containerPort: 8008
+          name: profiling
+        - containerPort: 8080
+          name: websocket
+        readinessProbe:
+          httpGet:
+            httpHeaders:
+            - name: k-kubelet-probe
+              value: autoscaler
+            port: 8080
+        resources: {{- toYaml .Values.autoscaler.resources | nindent 10 }}
+        securityContext: {{- toYaml .Values.autoscaler.containerSecurityContext | nindent 10 }}
+      imagePullSecrets: {{ .Values.imagePullSecrets | default list | toJson }}
+      serviceAccountName: {{ include "knative-serving.controllerServiceAccountName" . }}
+      {{- with .Values.autoscaler.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.autoscaler.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.autoscaler.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.autoscaler.topologySpreadConstraints }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
