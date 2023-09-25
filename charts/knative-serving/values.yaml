@@ -1,7 +1,11 @@
-imagePullSecrets: []
-kubernetesClusterDomain: cluster.local
+global:
+  config:
+    metricsDomain: knative.dev/internal/serving
 
-metricsDomain: knative.dev/internal/serving
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+kubernetesClusterDomain: cluster.local
 
 queueProxy:
   image:
