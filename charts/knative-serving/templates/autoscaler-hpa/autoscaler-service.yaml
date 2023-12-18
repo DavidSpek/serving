@@ -1,0 +1,16 @@
+{{- if .Values.autoscalerHpa.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "knative-serving.fullname" . }}-autoscaler-hpa
+  labels:
+    {{- include "knative-serving.labels" . | nindent 4 }}
+    {{- include "knative-serving.autoscalerHpaSelectorLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.autoscalerHpa.service.type }}
+  selector:
+    {{- include "knative-serving.selectorLabels" . | nindent 4 }}
+    {{- include "knative-serving.autoscalerHpaSelectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.autoscalerHpa.service.ports | toYaml | nindent 2 }}
+{{- end }}

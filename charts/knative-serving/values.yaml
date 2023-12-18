@@ -156,6 +156,65 @@ autoscaler:
       targetPort: 8080
     type: ClusterIP
 
+autoscalerHpa:
+  # if the hpa autoscaler should be deployed or not
+  enabled: true
+  replicas: 1
+
+  image:
+    repository: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler-hpa
+    tag: ""
+    digest: sha256:2dd6c0d5e864101884be7371ff5814f2e68e355917657e161eef6ba89f4deca0
+    pullPolicy: IfNotPresent
+
+  podAnnotations: {}
+
+  extraEnv: []
+
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+
+  resources:
+    limits:
+      cpu: 300m
+      memory: 400Mi
+    requests:
+      cpu: 30m
+      memory: 40Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: autoscaler-hpa
+          topologyKey: kubernetes.io/hostname
+        weight: 100
+
+  topologySpreadConstraints: []
+
+  service:
+    ports:
+    - name: http-metrics
+      port: 9090
+      targetPort: 9090
+    - name: http-profiling
+      port: 8008
+      targetPort: 8008
+    type: ClusterIP
+
 controller:
   image:
     repository: gcr.io/knative-releases/knative.dev/serving/cmd/controller

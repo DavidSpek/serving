@@ -65,6 +65,14 @@ app.kubernetes.io/component: autoscaler
 {{- end }}
 
 {{/*
+Autoscaler HPA Selector labels
+*/}}
+{{- define "knative-serving.autoscalerHpaSelectorLabels" -}}
+app.kubernetes.io/component: autoscaler-hpa
+autoscaling.knative.dev/autoscaler-provider: hpa
+{{- end }}
+
+{{/*
 Controller Selector labels
 */}}
 {{- define "knative-serving.controllerSelectorLabels" -}}
