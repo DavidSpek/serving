@@ -1,0 +1,13 @@
+{{- if .Values.configAutoscaler.configMap.create -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-autoscaler
+  labels:
+    {{- include "knative-serving.labels" . | nindent 4 }}
+    {{- include "knative-serving.autoscalerSelectorLabels" . | nindent 4 }}
+{{- with .Values.configAutoscaler.data }}
+data:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}

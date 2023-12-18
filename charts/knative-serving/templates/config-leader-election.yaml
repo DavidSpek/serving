@@ -1,0 +1,13 @@
+{{- if .Values.configLeaderElection.configMap.create -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-leader-election
+  labels:
+    {{- include "knative-serving.labels" . | nindent 4 }}
+    {{- include "knative-serving.controllerSelectorLabels" . | nindent 4 }}
+{{- with .Values.configLeaderElection.data }}
+data:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}

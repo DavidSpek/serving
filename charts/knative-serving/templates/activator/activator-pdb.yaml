@@ -1,0 +1,15 @@
+{{- if .Values.activator.pdb.create -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "knative-serving.fullname" . }}-activator-pdb
+  labels:
+    {{- include "knative-serving.labels" . | nindent 4 }}
+    {{- include "knative-serving.activatorSelectorLabels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.activator.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "knative-serving.selectorLabels" . | nindent 6 }}
+      {{- include "knative-serving.activatorSelectorLabels" . | nindent 6 }}
+{{- end }}
