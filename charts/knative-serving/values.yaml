@@ -1324,3 +1324,6 @@ configTracing:
 
 netIstio:
   enabled: true
+
+netCertmanager:
+  enabled: false
