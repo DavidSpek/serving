@@ -4,8 +4,6 @@
 remote: origin
 chart-dirs:
   - charts
-chart-repos:
-  - serving=https://davidspek.github.io/serving
 helm-extra-args: "--timeout 600s"
 validate-chart-schema: false
 validate-maintainers: false
