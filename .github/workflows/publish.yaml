@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@main # Change to static version once one newer than 1.6.0 is cut
         with:
           config: "./.github/configs/cr.yaml"
           skip_upload: true
