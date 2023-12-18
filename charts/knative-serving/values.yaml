@@ -1,5 +1,9 @@
 global:
   config:
+    # name of the logging config configmap
+    configLoggingName: config-logging
+    # name of the observability config configmap
+    configObservabilityName: config-observability
     metricsDomain: knative.dev/internal/serving
 
 imagePullSecrets: []
@@ -923,9 +927,6 @@ configLeaderElection:
 configLogging:
   configMap:
     create: true
-    # The name of the logging configmap to use.
-    # If not set and create is true, a name is generated using the fullname template
-    name: ""
   data:
     _example: |-
       ################################
@@ -1146,12 +1147,10 @@ configNetwork:
       #
       # NOTE: This flag is in an alpha state and is mostly here to enable internal testing for now. Use with caution.
       controlplane-trust: "disabled"
+    ingress-class: "istio.ingress.networking.knative.dev"
 configObservability:
   configMap:
     create: true
-    # The name of the observability configmap to use.
-    # If not set and create is true, a name is generated using the fullname template
-    name: ""
   data:
     _example: |-
       ################################
@@ -1263,3 +1262,6 @@ configTracing:
       debug: "false"
       # Percentage (0-1) of requests to trace
       sample-rate: "0.1"
+
+netIstio:
+  enabled: true

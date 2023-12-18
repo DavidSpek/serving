@@ -6,8 +6,11 @@ metadata:
   labels:
     {{- include "knative-serving.labels" . | nindent 4 }}
     {{- include "knative-serving.controllerSelectorLabels" . | nindent 4 }}
-{{- with .Values.configDomain.data }}
 data:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
+  {{- $example := pick .Values.configDomain.data "_example" -}}
+  {{- $sanitized := omit .Values.configDomain.data "_example" -}}
+  {{- toYaml $example | nindent 2 }}
+  {{- if $sanitized }}
+  {{- tpl (toYaml $sanitized) . | nindent 2 }}
+  {{- end }}
 {{- end }}

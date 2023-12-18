@@ -2,12 +2,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "knative-serving.configObservabilityName" . }}
+  name: {{ .Values.global.config.configObservabilityName }}
   labels:
     app.kubernetes.io/component: observability
     {{- include "knative-serving.labels" . | nindent 4 }}
-{{- with .Values.configObservability.data }}
 data:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
+  {{- $example := pick .Values.configObservability.data "_example" -}}
+  {{- $sanitized := omit .Values.configObservability.data "_example" -}}
+  {{- toYaml $example | nindent 2 }}
+  {{- if $sanitized }}
+  {{- tpl (toYaml $sanitized) . | nindent 2 }}
+  {{- end }}
 {{- end }}

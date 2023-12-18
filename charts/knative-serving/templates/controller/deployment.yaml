@@ -31,9 +31,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: CONFIG_LOGGING_NAME
-          value: {{ include "knative-serving.configLoggingName" . }}
+          value: {{ quote .Values.global.config.configLoggingName }}
         - name: CONFIG_OBSERVABILITY_NAME
-          value: {{ include "knative-serving.configObservabilityName" . }}
+          value: {{ quote .Values.global.config.configObservabilityName }}
         - name: METRICS_DOMAIN
           value: {{ quote .Values.global.config.metricsDomain }}
         - name: KUBERNETES_CLUSTER_DOMAIN

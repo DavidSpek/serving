@@ -110,25 +110,3 @@ Create the name of the controller service account to use
 {{- default "default" .Values.controller.serviceAccount.name }}
 {{- end }}
 {{- end }}
-
-{{/*
-Create the name of the logging configmap to use
-*/}}
-{{- define "knative-serving.configLoggingName" -}}
-{{- if .Values.configLogging.configMap.create }}
-{{- default (printf "%s-config-logging" (include "knative-serving.fullname" .)) .Values.configLogging.configMap.name }}
-{{- else }}
-{{- default "default" .Values.configLogging.configMap.name }}
-{{- end }}
-{{- end }}
-
-{{/*
-Create the name of the observability configmap to use
-*/}}
-{{- define "knative-serving.configObservabilityName" -}}
-{{- if .Values.configObservability.configMap.create }}
-{{- default (printf "%s-config-logging" (include "knative-serving.fullname" .)) .Values.configObservability.configMap.name }}
-{{- else }}
-{{- default "default" .Values.configObservability.configMap.name }}
-{{- end }}
-{{- end }}

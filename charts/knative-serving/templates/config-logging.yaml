@@ -2,12 +2,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "knative-serving.configLoggingName" . }}
+  name: {{ .Values.global.config.configLoggingName }}
   labels:
     app.kubernetes.io/component: logging
     {{- include "knative-serving.labels" . | nindent 4 }}
-{{- with .Values.configLogging.data }}
 data:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
+  {{- $example := pick .Values.configLogging.data "_example" -}}
+  {{- $sanitized := omit .Values.configLogging.data "_example" -}}
+  {{- toYaml $example | nindent 2 }}
+  {{- if $sanitized }}
+  {{- tpl (toYaml $sanitized) . | nindent 2 }}
+  {{- end }}
 {{- end }}
