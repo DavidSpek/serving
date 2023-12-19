@@ -3,7 +3,7 @@ name: knative-serving
 description: A Helm chart for Kubernetes
 type: application
 home: https://knative.dev/docs/
-version: 0.1.8
+version: 0.1.9
 appVersion: "1.12.2"
 dependencies:
 - name: net-istio
