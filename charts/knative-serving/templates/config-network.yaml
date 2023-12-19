@@ -10,7 +10,7 @@ data:
   {{- $example := pick .Values.configNetwork.data "_example" -}}
   {{- $sanitized := omit .Values.configNetwork.data "_example" -}}
   {{- toYaml $example | nindent 2 }}
-  {{- if .Values.netIstio.enabled }}
+  {{- if index .Values "net-istio" "enabled" }}
   ingress-class: "istio.ingress.networking.knative.dev"
   {{- $sanitized := omit $sanitized "ingress-class" -}}
   {{- if $sanitized }}

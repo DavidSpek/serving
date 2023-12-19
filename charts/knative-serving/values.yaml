@@ -1365,8 +1365,8 @@ configTracing:
       # Percentage (0-1) of requests to trace
       sample-rate: "0.1"
 
-netIstio:
+net-istio:
   enabled: true
 
-netCertmanager:
+net-certmanager:
   enabled: false
