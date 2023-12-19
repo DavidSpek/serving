@@ -4,6 +4,5 @@ metadata:
   name: routing-serving-certs
   labels:
     networking.internal.knative.dev/certificate-uid: serving-certs
-    routing-id: "0"
     serving-certs-ctrl: data-plane-routing
   {{- include "knative-serving.labels" . | nindent 4 }}
