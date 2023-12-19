@@ -1,0 +1,17 @@
+{{- if index .Values "net-istio" "enabled" }}
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: webhook
+  labels:
+  {{- include "knative-serving.labels" . | nindent 4 }}
+  {{- include "knative-serving.webookSelectorLabels" . | nindent 4 }}
+spec:
+  portLevelMtls:
+    "8443":
+      mode: PERMISSIVE
+  selector:
+    matchLabels:
+      {{- include "knative-serving.labels" . | nindent 8 }}
+      {{- include "knative-serving.webookSelectorLabels" . | nindent 8 }}
+{{- end }}

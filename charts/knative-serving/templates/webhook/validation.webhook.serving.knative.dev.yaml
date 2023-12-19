@@ -10,7 +10,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: {{ include "knative-serving.fullname" . }}-webhook
+      name: webhook
       namespace: {{ .Release.Namespace }}
   failurePolicy: Fail
   name: validation.webhook.serving.knative.dev
