@@ -3,14 +3,14 @@ name: knative-serving
 description: A Helm chart for Kubernetes
 type: application
 home: https://knative.dev/docs/
-version: 0.1.6
+version: 0.1.7
 appVersion: "1.12.2"
 dependencies:
 - name: net-istio
-  version: 0.1.4
+  version: 0.1.5
   repository: oci://ghcr.io/davidspek/charts
   condition: net-istio.enabled
 - name: net-certmanager
-  version: 0.1.1
+  version: 0.1.2
   repository: oci://ghcr.io/davidspek/charts
   condition: net-certmanager.enabled

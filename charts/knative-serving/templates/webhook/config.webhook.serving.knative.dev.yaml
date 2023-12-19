@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: {{ include "knative-serving.fullname" . }}-config.webhook.serving.knative.dev
+  name: config.webhook.serving.knative.dev
   labels:
   {{- include "knative-serving.labels" . | nindent 4 }}
 webhooks:
