@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "knative-serving.fullname" . }}-autoscaler-hpa
+  name: autoscaler-hpa
   labels:
     {{- include "knative-serving.labels" . | nindent 4 }}
     {{- include "knative-serving.autoscalerHpaSelectorLabels" . | nindent 4 }}

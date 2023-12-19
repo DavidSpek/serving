@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "knative-serving.fullname" . }}-controller
+  name: controller
   labels:
     {{- include "knative-serving.labels" . | nindent 4 }}
     {{- include "knative-serving.controllerSelectorLabels" . | nindent 4 }}
