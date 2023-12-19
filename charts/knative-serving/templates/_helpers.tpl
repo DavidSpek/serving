@@ -113,7 +113,7 @@ Create the name of the controller service account to use
 */}}
 {{- define "knative-serving.controllerServiceAccountName" -}}
 {{- if .Values.controller.serviceAccount.create }}
-{{- default (printf "%s-controller" (include "knative-serving.fullname" .)) .Values.controller.serviceAccount.name }}
+{{- default "controller" .Values.controller.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.controller.serviceAccount.name }}
 {{- end }}
