@@ -1,0 +1,16 @@
+{{- if and (index .Values "net-istio" "enabled") (index .Values "net-certmanager" "enabled") }}
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: net-certmanager-webhook
+  labels:
+  {{- include "net-certmanager.labels" (index .Subcharts "net-certmanager") | nindent 4 }}
+spec:
+  portLevelMtls:
+    "8443":
+      mode: PERMISSIVE
+  selector:
+    matchLabels:
+      {{- include "net-certmanager.selectorLabels" (index .Subcharts "net-certmanager") | nindent 8 }}
+      {{- include "net-certmanager.webhookSelectorLabels" (index .Subcharts "net-certmanager") | nindent 8 }}
+{{- end }}
