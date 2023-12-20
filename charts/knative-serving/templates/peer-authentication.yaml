@@ -1,0 +1,11 @@
+{{- if index .Values "net-istio" "enabled" }}
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: force-strict-mtls
+  labels:
+  {{- include "knative-serving.labels" . | nindent 4 }}
+spec:
+  mtls:
+    mode: STRICT
+{{- end }}
